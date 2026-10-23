@@ -16,7 +16,7 @@ export default async function RootLayout({ children }) {
             {user ? (
               <>
                 <Link href="/projects/new" className="btn small">+ New project</Link>
-                <span className="muted">Hi, {user.name}</span>
+                <Link href={`/users/${user.id}`}>{user.name}</Link>
                 <form action={logout}><button className="link">Log out</button></form>
               </>
             ) : (

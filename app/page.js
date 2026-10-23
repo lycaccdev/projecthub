@@ -1,35 +1,49 @@
 import Link from "next/link";
-import db from "@/lib/db";
+import ProjectCard from "@/components/ProjectCard";
+import { CATEGORIES } from "@/lib/constants";
+import { searchProjects } from "@/lib/projects";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const projects = db
-    .prepare(
-      `SELECT p.id, p.title, p.description, p.created_at, u.name AS owner,
-        (SELECT COUNT(*) FROM project_members m WHERE m.project_id = p.id) AS members,
-        (SELECT COUNT(*) FROM comments c WHERE c.project_id = p.id) AS comments
-       FROM projects p JOIN users u ON u.id = p.owner_id
-       ORDER BY p.created_at DESC, p.id DESC`
-    )
-    .all();
+export default async function Home({ searchParams }) {
+  const sp = await searchParams;
+  const q = String(sp.q ?? "").trim();
+  const category = CATEGORIES.includes(sp.category) ? sp.category : "";
+  const projects = searchProjects({ q, category });
+
+  // Builds a link that keeps the current search but changes the category.
+  const categoryHref = (c) => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (c) params.set("category", c);
+    const s = params.toString();
+    return s ? `/?${s}` : "/";
+  };
 
   return (
     <>
       <h1>Projects</h1>
+      <form className="search" action="/">
+        <input name="q" type="search" placeholder="Search projects…" defaultValue={q} />
+        {category && <input type="hidden" name="category" value={category} />}
+        <button className="btn">Search</button>
+      </form>
+      <nav className="chips filters">
+        <Link href={categoryHref("")} className={`chip ${!category ? "active" : ""}`}>All</Link>
+        {CATEGORIES.map((c) => (
+          <Link key={c} href={categoryHref(c)} className={`chip ${category === c ? "active" : ""}`}>{c}</Link>
+        ))}
+      </nav>
+
       {projects.length === 0 ? (
-        <p className="muted">No projects yet. <Link href="/projects/new">Create the first one.</Link></p>
+        q || category ? (
+          <p className="muted">No projects match. <Link href="/">Clear filters</Link></p>
+        ) : (
+          <p className="muted">No projects yet. <Link href="/projects/new">Create the first one.</Link></p>
+        )
       ) : (
         <ul className="cards">
-          {projects.map((p) => (
-            <li key={p.id} className="card">
-              <Link href={`/projects/${p.id}`}><h2>{p.title}</h2></Link>
-              <p className="clamp">{p.description || <span className="muted">No description</span>}</p>
-              <p className="meta">
-                by {p.owner} · {p.members} member{p.members === 1 ? "" : "s"} · {p.comments} comment{p.comments === 1 ? "" : "s"}
-              </p>
-            </li>
-          ))}
+          {projects.map((p) => <ProjectCard key={p.id} p={p} />)}
         </ul>
       )}
     </>

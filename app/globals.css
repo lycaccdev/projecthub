@@ -50,3 +50,27 @@ input, textarea { font: inherit; padding: .55rem .7rem; border: 1px solid var(--
 .comment { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: .7rem .9rem; }
 .comment p { margin: .25rem 0 0; white-space: pre-wrap; }
 .inline { display: inline; margin-left: .5rem; }
+
+/* v2: search, categories, profiles, join requests */
+select { font: inherit; padding: .55rem .7rem; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); color: var(--text); width: 100%; }
+fieldset { border: 1px solid var(--border); border-radius: 8px; padding: .6rem .9rem; margin: 0; }
+legend { font-weight: 500; padding: 0 .3rem; }
+label.radio { flex-direction: row; align-items: center; gap: .5rem; font-weight: 400; padding: .2rem 0; }
+label.radio input { width: auto; }
+.grow { flex: 1; min-width: 0; }
+.badge { display: inline-block; font-size: .78rem; font-weight: 600; padding: .1rem .55rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); white-space: nowrap; }
+a.badge:hover { text-decoration: none; }
+.search { display: flex; gap: .5rem; margin: 1rem 0 .75rem; }
+.filters { margin-bottom: 1rem; }
+.filters .chip { color: var(--text); }
+.filters .chip:hover { text-decoration: none; border-color: var(--accent); }
+.chip.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.panel { background: color-mix(in srgb, var(--accent) 6%, var(--surface)); border: 1px solid var(--border);
+  border-radius: 12px; padding: .25rem 1rem .75rem; margin-top: 1rem; }
+.list { list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: var(--accent-text);
+  display: grid; place-items: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0; }
+.comment .form { margin: .5rem 0 0; }
+a.inline { margin-left: .5rem; }
